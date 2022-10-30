@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 23:16:35 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/27 23:56:20 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/30 00:11:38 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -37,12 +37,24 @@ int	ft_malloc_p(size_t size, void **ptr)
 	p = NULL;
 	if (*ptr)
 	{
-		ft_eprintf("ft_malloc_p can only malloc if *ptr is NULL.");
-		ft_eprintf(" Clear ptr then malloc\n");
+		ft_eprintf("WARNING : ft_malloc_p should only malloc if *ptr is NULL.");
+		ft_eprintf(" Clear ptr before calling ft_malloc_p\n");
 	}
 	p = malloc(size);
 	*ptr = p;
 	return (p != NULL);
+}
+
+int	ft_calloc_p(size_t size, void **ptr)
+{
+	void	*p;
+
+	p = NULL;
+	if (!ft_malloc_p(size, &p))
+		return (0);
+	ft_memclear(p, size);
+	*ptr = p;
+	return (1);
 }
 
 int	ft_free_p(void **ptr)
@@ -53,20 +65,4 @@ int	ft_free_p(void **ptr)
 		*ptr = NULL;
 	}
 	return (1);
-}
-
-void	*malloc_free(size_t size, void **ptr)
-{	
-	if (size)
-	{
-		*ptr = malloc(size);
-		if (*ptr)
-			return (*ptr);
-	}
-	else if (ptr && *ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
-	return (NULL);
 }

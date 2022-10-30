@@ -1,9 +1,9 @@
 
-SRC_DIR			= philo/
+SRC_DIR			= philo_m/
 SRC_B_DIR		= philo_bonus/
 
-LFT_SRC			= ft_atoi.c	\
-				  ft_deltatime_usec.c 	\
+_LFT_SRC			= ft_atoi.c	\
+				  ft_isdigit.c		\
 				  ft_memclear.c			\
 				  malloc_free.c			\
 				  ft_eprintf.c
@@ -11,22 +11,26 @@ LFT_SRC			= ft_atoi.c	\
 _SRC		=	philo_main.c	\
 				parse_inputs.c	\
 				logging.c		\
+				log_pool_utils.c	\
 				error_handling.c	\
 				philo_thread.c		\
+				timer.c			\
 				print_funcs.c
 
 #_SRC_B	=	checker_main_bonus.c
 
-SRC_M		= $(addprefix $(SRC_DIR), $(_SRC) $(LFT_SRC))
+SRC_M		= $(addprefix $(SRC_DIR), $(_SRC))
+LFT_SRC		= $(addprefix $(SRC_DIR), $(_LFT_SRC))
 #SRC_B		= $(addprefix $(SRC_B_DIR), $(_SRC_B))
 
-OBJ_M		= $(SRC_M:.c=.o)
+OBJ_M		= $(SRC_M:.c=.o) $(LFT_SRC:.c=.o)
 #OBJ_B		= $(SRC_B:.c=.o)
 
-INCL		= philo/
+INCL		= $(SRC_DIR)
+INCL_B		= $(SRC_B_DIR)
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -pthread -Wall -Wextra -Werror
 
 NAME		= philo
 NAME_BONUS	= philo_bonus
@@ -41,9 +45,6 @@ $(NAME):	$(OBJ_M)
 
 #$(NAME_BONUS):	$(OBJ_B)
 #		$(CC) $(CFLAGS) -o $(NAME_BONUS) $(OBJ_B)
-
-$(LIBFT):
-		make -C libft/
 
 all:		$(NAME)
 

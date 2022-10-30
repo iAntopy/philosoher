@@ -6,11 +6,19 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:48:15 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/27 23:53:52 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/30 03:02:47 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	ft_is_only_digits(char *str)
+{
+	while (*str)
+		if (!ft_isdigit(*(str++)))
+			return (0);
+	return (1);
+}
 
 int	parse_inputs(t_plato *pt, int argc, char **argv)
 {
@@ -18,8 +26,9 @@ int	parse_inputs(t_plato *pt, int argc, char **argv)
 		return (-1);
 	if (argc < 5)
 		return (-1);
-	if ((argc < 5) || (argc > 6) || !ft_isdigit(argv[1]) || !ft_isdigit(argv[2])
-		|| !ft_isdigit(argv[3]) || !ft_isdigit(argv[4]))
+	if ((argc < 5) || (argc > 6) || !ft_is_only_digits(argv[1])
+		|| !ft_is_only_digits(argv[2]) || !ft_is_only_digits(argv[3])
+		|| !ft_is_only_digits(argv[4]))
 		return (-1);
 	pt->np = ft_atoi(argv[1]);
 	pt->delays[0] = ft_atoi(argv[2]);
@@ -28,7 +37,7 @@ int	parse_inputs(t_plato *pt, int argc, char **argv)
 	pt->delays[3] = 0;
 	if (argc == 6)
 	{
-		if (!ft_isdigit(argv[5]))
+		if (!ft_is_only_digits(argv[5]))
 			return (-1);
 		pt->delays[3] = ft_atoi(argv[5]);
 	}

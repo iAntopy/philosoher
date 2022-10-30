@@ -6,11 +6,21 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 15:39:24 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/27 23:55:30 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/29 01:05:53 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h" 
+
+static int	ft_isspace(int c)
+{
+	return (c == ' ' || (9 <= c && c <= 13));
+}
+
+static int	ft_issign(int c)
+{
+	return (c == '+' || c == '-');
+}
 
 int	ft_atoi(const char *str)
 {
@@ -28,9 +38,7 @@ int	ft_atoi(const char *str)
 		sign -= 2 * (*str == '-');
 		str++;
 	}
-	while (*str && ft_isdigit(*str) && (nb < LLONG_MAX))
+	while (*str && ft_isdigit(*str))
 		nb = (nb * 10) + (*(str++) - '0');
-	if (nb > LLONG_MAX)
-		return (-1 + (sign == -1));
 	return (sign * nb);
 }
