@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/28 15:39:24 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/29 01:05:53 by iamongeo         ###   ########.fr       */
+/*   Created: 2022/10/31 02:32:53 by iamongeo          #+#    #+#             */
+/*   Updated: 2022/10/31 02:32:57 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	ft_issign(int c)
 	return (c == '+' || c == '-');
 }
 
-int	ft_atoi(const char *str)
+ssize_t	ft_atol(const char *str)
 {
 	size_t	nb;
 	int		sign;

@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 18:37:49 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/30 03:03:40 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/31 04:23:30 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	*philo_living_life(void *philo_p)
 	t_philo		*ph;
 	
 	ph = (t_philo *)philo_p;
-	printf("philo %zu : it seemed as life had just begun ...\n", ph->thread_id);
-	philo_print(ph);
+//	printf("philo %zu : it seemed as life had just begun ...\n", ph->thread_id);
+//	philo_print(ph);
 	gettimeofday(&t0, NULL);
 	while (!(*(ph->death_occured)))
 	{
