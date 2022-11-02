@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 20:14:21 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 04:04:02 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:32:13 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	philo_print(t_philo *ph)
 {
 	printf("\n¤**¤~~~~~~~~~~~~~~~¤{ PHILO }¤~~~~~~~~~~~~~~¤**¤\n");
-	printf(" ||	thread_id :	%20zd ||\n", ph->thread_id);
+	printf(" ||	thread_id :	%20zu ||\n", (size_t)ph->thread_id);
 	printf(" ||	id :		%20s||\n", ph->id);
 	printf(" ||	delays :	%20p ||\n", ph->delays);
 	printf(" ||	left_frk :	%20p ||\n", ph->left_fork);

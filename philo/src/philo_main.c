@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 04:34:30 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/31 21:40:11 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ int	plato_clear(t_plato *pt, int ret_value)
 	i = -1;
 	while (++i < pt->np)
 	{
-		printf("plato clear : %d - joining thread %zu\n", i, pt->philos[i].thread_id);
+		printf("plato clear : %d - joining thread %p\n", i, (void *)pt->philos[i].thread_id);
 		if (pt->philos[i].thread_id)
 			pthread_join(pt->philos[i].thread_id, NULL);
 	}
+	printf("plato clear : joining coach %p\n", (void *)pt->coach);
+	pthread_join(pt->coach, NULL);
 	printf("plato clear : all threads joined SUCCESSFULLY (if possible) \n");
 	
 	if (pt->philos)
@@ -101,6 +103,7 @@ int	plato_malloc_and_init_all_philos(t_plato *pt)
 	{
 		ph = philos + i;
 		ph->death_occured = &pt->death_occured;
+		ph->nb_id = i;
 		ph->__id_len = ft_putnbr_buff(ph->id, i + 1);
 		ph->delays = pt->delays;
 		ph->log_msg = pt->log_msg;
@@ -125,7 +128,7 @@ int	plato_init(t_plato *pt, int argc, char **argv)
 	printf("plato init : entered \n");
 	if (parse_inputs(pt, argc, argv) < 0)
 		return (repport_parsing_error());
-	printf("plato init : parseing SUCCESSFULL \n");
+	printf("plato init : parsing SUCCESSFULL \n");
 	pt->print_delay = plato_find_min_print_delay(pt);
 //	if (pthread_mutex_init(&pt->queue_lock, NULL) != 0
 //		|| pthread_mutex_init(&pt->pool_lock, NULL) != 0)
@@ -142,21 +145,13 @@ int	plato_init(t_plato *pt, int argc, char **argv)
 		return (repport_malloc_error());
 	}
 //	printf("plato init : malloc philos, forks and log pool SUCCESSFULL \n");
-	i = 0;
-	while (i < pt->np)
-	{
-		if (pthread_create(&(pt->philos[i].thread_id), NULL, philo_living_life, pt->philos + i) != 0)
+	i = -1;
+	while (++i < pt->np)
+		if (pthread_create(&(pt->philos[i].thread_id), NULL, philo_living_life, pt->philos + i))
 			return (repport_thread_init_error());
-		i += 2;
-	}
-	i = 1;
-	while (i < pt->np)
-	{
-		if (pthread_create(&(pt->philos[i].thread_id), NULL, philo_living_life, pt->philos + i) != 0)
-			return (repport_thread_init_error());
-		i += 2;
-	}
-//	printf("plato init : init philos SUCCESSFULL \n");
+	if (pthread_create(&pt->coach, NULL, coach_overlooking_steaming_brains, pt))
+		return (repport_thread_init_error());
+	printf("plato init : init philos SUCCESSFULL \n");
 	return (0);
 }
 

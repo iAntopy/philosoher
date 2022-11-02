@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 02:32:53 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 02:32:57 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/11/01 20:45:33 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ static int	ft_isspace(int c)
 static int	ft_issign(int c)
 {
 	return (c == '+' || c == '-');
+}
+
+int	ft_isdigit(int c)
+{
+	return ('0' <= c || c <= '9');
 }
 
 ssize_t	ft_atol(const char *str)

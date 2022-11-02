@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:24:43 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 04:19:14 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/31 20:47:41 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,16 @@ int	philo_log_event(t_philo *ph, int event, ssize_t timestamp)
 }
 */
 
-int	philo_log_event(t_philo *ph, int event, ssize_t timestamp)
+int	philo_log_event(t_philo *ph, int event)
 {
 	char		ts_str[24];
-	int		ts_len;
+	int			ts_len;
 	const char	*msg;
-	int		msg_len;
+	int			msg_len;
 
-	if (!ph || timestamp == -1)
-	{
-		philo_log_event(ph, PH_DIE, ph->time_of_death);
+	if (!ph || *ph->death_occured)
 		return (-1);
-	}
-	ts_len = ft_putnbr_buff(ts_str, timestamp);
+	ts_len = ft_putnbr_buff(ts_str, timer_ms(&ph->t0));
 	msg = ph->log_msg[event];
 	msg_len = ph->log_msg_len[event];
 	pthread_mutex_lock(ph->print_lock);

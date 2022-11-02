@@ -1,16 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr.c                                        :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/28 15:51:29 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 03:35:37 by iamongeo         ###   ########.fr       */
+/*   Created: 2022/11/01 20:42:42 by iamongeo          #+#    #+#             */
+/*   Updated: 2022/11/01 21:00:57 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+size_t	ft_strlen(char const *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+// clears mem to zero at dest for size bytes.
+void	ft_memclear(void *dest, size_t size)
+{
+	size_t			*p;
+	unsigned char	*c;
+
+	if (!dest || !size)
+		return ;
+	p = (size_t *)dest;
+	c = (unsigned char *)dest;
+	while (size >= sizeof(size_t))
+	{
+		*(p++) = 0;
+		size -= sizeof(size_t);
+	}
+	c = (unsigned char *)p;
+	while (size)
+	{
+		*(c++) = 0;
+		size -= sizeof(unsigned char);
+	}
+}
 
 static char	*rec_putnbr(char *buff, size_t n)
 {
@@ -31,17 +64,3 @@ int	ft_putnbr_buff(char *buff, ssize_t n)
 	*b = '\0';
 	return (b - buff);
 }
-/*
-int	main(int argc, char **argv)
-{
-	char	n1[20];
-	char	n2[20];
-
-	if (argc < 3)
-		return (1);
-	ft_putnbr_buff(n1, ft_atol(argv[1]));
-	ft_putnbr_buff(n2, ft_atol(argv[2]));
-	printf("n1: %s, n2: %s\n", n1, n2);
-	return (0);
-}
-*/

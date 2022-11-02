@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 04:18:25 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/10/31 20:47:48 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 # define XX_BASE "0123456789ABCDEF"
 # define DEC_BASE "0123456789"
 
+typedef struct timeval	t_tv;
+
 typedef struct	s_log_info
 {
 	int					id;
@@ -43,8 +45,9 @@ typedef struct	s_log_info
 typedef struct	s_philo
 {
 	pthread_t		thread_id;
+	int				nb_id;
 	char			id[32];
-	int			__id_len;
+	int				__id_len;
 	ssize_t			*delays;
 	char			*death_occured;
 	pthread_mutex_t	*left_fork;
@@ -56,6 +59,8 @@ typedef struct	s_philo
 //	t_log			**logs_pool;
 	const char		**log_msg;
 	const int		*log_msg_len;
+	t_tv			t0;
+	t_tv			pasta_t;
 	ssize_t			time_of_death;
 	ssize_t			nb_meals;
 }	t_philo;
@@ -67,6 +72,7 @@ typedef struct	s_plato
 	ssize_t	print_delay;		// min(deltas[0:2])
 	char	death_occured;
 	t_philo			*philos;		// array of philosopher structs. len = np.
+	pthread_t		coach;			// thread checking times 
 	pthread_mutex_t	*forks;			// Array of mutexes. len = np
 	pthread_mutex_t	print_lock;
 //	pthread_mutex_t	queue_lock;		// Single log for event logger.
@@ -93,8 +99,6 @@ enum	e_philo_events
 	PH_DIE = 4
 };
 
-typedef struct timeval	t_tv;
-
 ///////////// LIBFT /////////////
 int		ft_malloc_p(size_t size, void **ptr);
 int		ft_calloc_p(size_t size, void **ptr);
@@ -105,12 +109,12 @@ size_t		ft_strlen(const char *str);
 int		ft_isdigit(int c);
 void		ft_memclear(void *dst, size_t size);
 int		ft_eprintf(const char *fmt, ...);
-ssize_t		timer_ms(t_philo *ph, t_tv *t, ssize_t pasta_time);
-ssize_t		timer_update_ms(t_philo *ph, t_tv *t, ssize_t *pasta_time);
+ssize_t		timer_ms(t_tv *t0);
 
 /////////// PHILOSOPHER FUNCS //////////
-int	parse_inputs(t_plato *pt, int argc, char **argv);
-int	philo_log_event(t_philo *ph, int event, ssize_t timestamp);
+int		parse_inputs(t_plato *pt, int argc, char **argv);
+int		philo_log_event(t_philo *ph, int event);
+void	*coach_overlooking_steaming_brains(void *plato_p);
 void	*philo_living_life(void *ph);
 ssize_t	plato_find_min_print_delay(t_plato *pt);
 
