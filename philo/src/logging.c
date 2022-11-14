@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:24:43 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 20:47:41 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/11/13 01:36:07 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,25 @@ int	philo_log_event(t_philo *ph, int event)
 	int			ts_len;
 	const char	*msg;
 	int			msg_len;
+//	t_tv		start;
 
 	if (!ph || *ph->death_occured)
 		return (-1);
-	ts_len = ft_putnbr_buff(ts_str, timer_ms(&ph->t0));
+//	gettimeofday(&start, NULL);
+//	ts_len = ft_putnbr_buff(ts_str, (timer_us(&ph->t0) - ph->t_offset) / 1000);
+	ts_len = ft_putnbr_buff(ts_str, timer_us(&ph->t0) / 1000);
 	msg = ph->log_msg[event];
 	msg_len = ph->log_msg_len[event];
 	pthread_mutex_lock(ph->print_lock);
 	write(1, ts_str, ts_len);
 	write(1, ph->id, ph->__id_len);
 	write(1, msg, msg_len);
+//	printf("log : cur t_offset : %zd\n", ph->t_offset);
+//	ph->t_offset += timer_us(&start);
 	pthread_mutex_unlock(ph->print_lock);
 	return (0);
 }
-
+/*
 ssize_t	plato_find_min_print_delay(t_plato *pt)
 {
 	ssize_t	min;
@@ -67,7 +72,7 @@ ssize_t	plato_find_min_print_delay(t_plato *pt)
 		min = pt->delays[2];
 	return (min);
 }
-/*
+
 int	plato_print_logs(t_plato *pt)
 {
 	t_log	*log;

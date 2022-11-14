@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 18:10:46 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 20:44:00 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/11/12 22:00:55 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ ssize_t	ft_deltatime_usec(void)
 	return (delta_t);
 }
 */
-ssize_t	timer_ms(t_tv *t0)
+ssize_t	timer_us(t_tv *t0)
 {
 	t_tv	curr_t;
 	ssize_t	delta_t;
@@ -42,8 +42,8 @@ ssize_t	timer_ms(t_tv *t0)
 		return (0);
 	}
 	gettimeofday(&curr_t, NULL);
-	delta_t = (ssize_t)(curr_t.tv_sec - t0->tv_sec) * 1000;
-	delta_t += (ssize_t)(curr_t.tv_usec - t0->tv_usec) / 1000;
+	delta_t = (ssize_t)(curr_t.tv_sec - t0->tv_sec) * 1000000;
+	delta_t += (ssize_t)(curr_t.tv_usec - t0->tv_usec);
 //	printf("timer : philo %d, delta_t since last pasta_time : %zd\n", ph->id, delta_t - pasta_time);
 	return (delta_t);
 }

@@ -24,7 +24,7 @@ OBJ_M		= $(SRC_M:.c=.o) $(LFT_SRC:.c=.o)
 INCL		= $(INCL_DIR)
 
 CC			= gcc
-CFLAGS		= -pthread -Wall -Wextra -Werror
+CFLAGS		= -pthread -Wall -Wextra -Werror -O2
 
 NAME		= philo
 

@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/31 21:40:11 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/11/12 21:37:52 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ int	plato_clear(t_plato *pt, int ret_value)
 
 	if (!pt)
 		return (ret_value);
-	usleep(50000);
-	printf("plato clear : entered \n");
+	usleep(100000);
+//	printf("plato clear : entered \n");
 	
-	pt->death_occured = 1;
+//	pt->death_occured = 1;
 	i = -1;
 	while (++i < pt->np)
 	{
-		printf("plato clear : %d - joining thread %p\n", i, (void *)pt->philos[i].thread_id);
+//		printf("plato clear : %d - joining thread %p\n", i, (void *)pt->philos[i].thread_id);
 		if (pt->philos[i].thread_id)
 			pthread_join(pt->philos[i].thread_id, NULL);
 	}
@@ -73,28 +73,35 @@ int	plato_send_forth_legion_of_pasta_eaters(t_plato *pt)
 }
 */
 
-int	plato_malloc_and_init_all_forks(t_plato *pt)
+static int	plato_malloc_init_all_mutexes(t_plato *pt)
 {
 	pthread_mutex_t	*fs;
 
 	fs = NULL;
-	if (!pt || !ft_calloc_p(sizeof(pthread_mutex_t) * pt->np, (void **)&fs))
-		return (-1);
+	if (!pt || !ft_calloc_p(sizeof(pthread_mutex_t) * pt->np, (void **)&fs)
+		|| pthread_mutex_init(&pt->print_lock, NULL) != 0)
+		return (ft_free_p((void **)&fs) - 1);
 	pt->forks = fs;
 	while ((fs - pt->forks) < pt->np)
+	{
 		if (pthread_mutex_init(fs++, NULL) != 0)
-			return (-1);
+		{
+			while (--fs >= pt->forks)
+				pthread_mutex_destroy(fs);
+			return (ft_free_p((void **)&pt->forks) - 1);
+		}
+	}
 	return (0);
 }
 
-int	plato_malloc_and_init_all_philos(t_plato *pt)
+static int	plato_malloc_init_all_philos(t_plato *pt)
 {
 	t_philo	*philos;
 	t_philo	*ph;
 	int	i;
 
 	philos = NULL;
-	printf("malloc init philos : entered. plato ptr : %p, nb philos %d, sizeof(t_philo) : %zu\n", pt, pt->np, sizeof(t_philo));
+//	printf("malloc init philos : entered. plato ptr : %p, nb philos %d, sizeof(t_philo) : %zu\n", pt, pt->np, sizeof(t_philo));
 	if (!pt || !ft_calloc_p(sizeof(t_philo) * pt->np, (void **)&philos))
 		return (-1);
 //	printf("malloc init philos : calloc SUCCESSFULL\n");
@@ -105,7 +112,9 @@ int	plato_malloc_and_init_all_philos(t_plato *pt)
 		ph->death_occured = &pt->death_occured;
 		ph->nb_id = i;
 		ph->__id_len = ft_putnbr_buff(ph->id, i + 1);
-		ph->delays = pt->delays;
+//		ph->delays = pt->delays;
+		ph->t_eat = pt->t_eat;
+		ph->t_slp = pt->t_slp;
 		ph->log_msg = pt->log_msg;
 		ph->log_msg_len = (const int *)pt->log_msg_len;
 		ph->left_fork = pt->forks + ((i + (i % 2)) % pt->np);
@@ -122,24 +131,18 @@ int	plato_malloc_and_init_all_philos(t_plato *pt)
 	return (0);
 }
 
-int	plato_init(t_plato *pt, int argc, char **argv)
+static int	plato_init(t_plato *pt, int argc, char **argv)
 {
 	int	i;
-	printf("plato init : entered \n");
+//	printf("plato init : entered \n");
 	if (parse_inputs(pt, argc, argv) < 0)
 		return (repport_parsing_error());
-	printf("plato init : parsing SUCCESSFULL \n");
-	pt->print_delay = plato_find_min_print_delay(pt);
-//	if (pthread_mutex_init(&pt->queue_lock, NULL) != 0
-//		|| pthread_mutex_init(&pt->pool_lock, NULL) != 0)
-//		return (repport_mutex_error());
-	if (pthread_mutex_init(&pt->print_lock, NULL) != 0)
-		return (-1);
-	printf("plato init : nb philos : %d, time to die : %zd, time to eat : %zd, time to sleep : %zd, nb meals : %zd\n", pt->np, pt->delays[0], pt->delays[1], pt->delays[2], pt->delays[3]);
+//	printf("plato init : parsing SUCCESSFULL \n");
+//	pt->print_delay = plato_find_min_print_delay(pt);
+//	printf("plato init : nb philos : %d, time to die : %zd, time to eat : %zd, time to sleep : %zd, max meals : %zd\n", pt->np, pt->t_die, pt->t_eat, pt->t_slp, pt->max_meals);
 	if (!ft_calloc_p(sizeof(t_philo) * pt->np, (void **)&pt->philos)
-		|| plato_malloc_and_init_all_forks(pt) < 0
-//		|| plato_create_log_pool(pt) < 0
-		|| plato_malloc_and_init_all_philos(pt) < 0)
+		|| plato_malloc_init_all_mutexes(pt) < 0
+		|| plato_malloc_init_all_philos(pt) < 0)
 	{
 		printf("plate init : either malloc forks, malloc philos or malloc logs pool fucked up !\n");
 		return (repport_malloc_error());
@@ -151,7 +154,7 @@ int	plato_init(t_plato *pt, int argc, char **argv)
 			return (repport_thread_init_error());
 	if (pthread_create(&pt->coach, NULL, coach_overlooking_steaming_brains, pt))
 		return (repport_thread_init_error());
-	printf("plato init : init philos SUCCESSFULL \n");
+//	printf("plato init : init philos SUCCESSFULL \n");
 	return (0);
 }
 
@@ -162,7 +165,7 @@ int	main(int argc, char **argv)
 	int				i;
 	
 	ft_memclear(&plato, sizeof(plato));
-	printf("main : t_plato declared variable plato was cleared\n");
+//	printf("main : t_plato declared variable plato was cleared\n");
 	plato.log_msg = log_msg;
 	i = -1;
 	while (++i < 5)
@@ -174,9 +177,10 @@ int	main(int argc, char **argv)
 	}
 //	printf("main : plato init was SUCCESSFULL !\n");
 //	plato_print(&plato);
-	while (!plato.death_occured)
+//	while (!plato.death_occured)
+//		usleep(50000);
 //	{
-		usleep(plato.print_delay);
+//		usleep(plato.print_delay);
 //		plato_print_logs(&plato);
 //	}
 	return (plato_clear(&plato, EXIT_SUCCESS));
