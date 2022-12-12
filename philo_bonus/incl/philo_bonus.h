@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/11/01 21:52:18 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/11 23:38:19 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 
 # define FORK_SEM_PATH "./sems/forks.sem"
 # define DEATH_SEM_PATH "./sems/death.sem"
-# define BLOATED_SEM_PATH "./sems/bloated.sem"
+# define BLOAT_SEM_PATH "./sems/bloated.sem"
 # define PRINT_SEM_PATH "./sems/print.sem"
 
 typedef struct timeval	t_tv;
@@ -87,30 +87,30 @@ enum	e_philo_events
 int		ft_malloc_p(size_t size, void **ptr);
 int		ft_calloc_p(size_t size, void **ptr);
 int		ft_free_p(void **ptr);
-ssize_t		ft_atol(const char *str);
+ssize_t	ft_atol(const char *str);
 int		ft_putnbr_buff(char *buff, ssize_t nbr);	// returns len of nbr str in buff
-size_t		ft_strlen(const char *str);
+size_t	ft_strlen(const char *str);
 int		ft_isdigit(int c);
-void		ft_memclear(void *dst, size_t size);
+void	ft_memclear(void *dst, size_t size);
 int		ft_eprintf(const char *fmt, ...);
-ssize_t		timer_ms(t_tv *t0);
+ssize_t	timer_ms(t_tv *t0);
 
 /////////// PHILOSOPHER FUNCS //////////
 int		parse_inputs(t_plato *pt, int argc, char **argv);
 int		philo_log_event(t_philo *ph, int event);
 //void	*coach_overlooking_steaming_brains(void *plato_p);
 void	philo_routine(t_philo *ph);
-ssize_t	plato_find_min_print_delay(t_plato *pt);
+//ssize_t	plato_find_min_print_delay(t_plato *pt);
 
 ////////// PRINT FUNCS /////////////
-void	philo_print(t_philo *ph);
+//void	philo_print(t_philo *ph);
 //void	plato_print(t_plato *pt);
 
 ////////// ERROR HANDLING ////////////
-int	repport_parsing_error(void);
-int	repport_thread_init_error(void);
-int	repport_fork_error(void);
-int	repport_thread_init_error(void);
-int	repport_semaphore_error(void);
+int		repport_parsing_error(void);
+int		repport_thread_init_error(void);
+int		repport_fork_error(void);
+int		repport_thread_init_error(void);
+int		repport_semaphore_error(void);
 
 #endif

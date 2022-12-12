@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:50:28 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/10/29 03:57:42 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/10 20:36:18 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	repport_mutex_error(void)
 int	repport_thread_init_error(void)
 {
 	ft_eprintf(WHITE_BC"\n\t\t(("RED_BC);
-	ft_eprintf("__________( "WHITE_BC"THREAD INITIALIZATION ERROR"RED_BC" )__________");
+	ft_eprintf("__________( "WHITE_BC"THREAD INIT ERROR"RED_BC" )__________");
 	ft_eprintf(WHITE_BC"))\n\n"WHITE_C);
 	return (-1);
 }

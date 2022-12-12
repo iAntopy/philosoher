@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 20:42:42 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/11/01 21:00:57 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/10 20:38:35 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+ssize_t	timer_us(t_tv *t0)
+{
+	t_tv	curr_t;
+	ssize_t	delta_t;
+
+	if (!t0)
+	{
+		ft_eprintf("timer_ms : missing input args pt or t0 ptrs.\n");
+		return (0);
+	}
+	gettimeofday(&curr_t, NULL);
+	delta_t = (ssize_t)(curr_t.tv_sec - t0->tv_sec) * 1000000;
+	delta_t += (ssize_t)(curr_t.tv_usec - t0->tv_usec);
+	return (delta_t);
+}
 
 size_t	ft_strlen(char const *str)
 {
@@ -22,27 +38,21 @@ size_t	ft_strlen(char const *str)
 	return (i);
 }
 
-// clears mem to zero at dest for size bytes.
 void	ft_memclear(void *dest, size_t size)
 {
-	size_t			*p;
-	unsigned char	*c;
+	size_t	*d;
+	char	*c;
+	size_t	div;
+	size_t	mod;
 
-	if (!dest || !size)
-		return ;
-	p = (size_t *)dest;
-	c = (unsigned char *)dest;
-	while (size >= sizeof(size_t))
-	{
-		*(p++) = 0;
-		size -= sizeof(size_t);
-	}
-	c = (unsigned char *)p;
-	while (size)
-	{
-		*(c++) = 0;
-		size -= sizeof(unsigned char);
-	}
+	d = (size_t *)dest;
+	div = size / sizeof(size_t);
+	mod = size % sizeof(size_t);
+	while (div--)
+		*(d++) = 0;
+	c = (char *)d;
+	while (mod--)
+		*(c++) = '\0';
 }
 
 static char	*rec_putnbr(char *buff, size_t n)

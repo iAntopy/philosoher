@@ -1,16 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*   philo_routine_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 15:18:14 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/11/01 22:13:16 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/11 23:51:55 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+void	philo_sleep_check(t_philo *ph, ssize_t time)
+{
+	t_tv	start;
+
+	gettimeofday(&start, NULL);
+	while (!ph->is_dead && timer_ms(&start) < time)
+		usleep(500);
+}
 
 void	*death_from_above(void *philo_p)
 {
@@ -19,6 +28,7 @@ void	*death_from_above(void *philo_p)
 	ph = (t_philo *)philo_p;
 	sem_wait(ph->death_occured);
 	ph->is_dead = 1;
+	philo_log_event(ph, PH_DIE);
 	sem_post(ph->death_occured);
 	sem_post(ph->death_occured);
 	return (NULL);
@@ -35,6 +45,28 @@ void	*philos_bloated(void *philo_p)
 	return (NULL);
 }
 
+void	*coach_overlooking_steaming_brain(void *plato_p)
+{
+	t_plato	*pt;
+	t_philo	*ph;
+
+	pt = (t_plato *)plato_p;
+	ph = (t_philo *)&pt->ph;
+	while (!ph->is_dead)
+	{
+		usleep(500);
+		if ((timer_us(&ph->pasta_t) > pt->t_die) && !philo_log(ph, PH_DIE))
+		{
+			pt->death_occured = 1;
+			break ;
+		}
+		if (pt->max_meals && (ph->nb_meals >= pt->max_meals))
+			sem_post(ph->philos_all_full);
+//			nb_over_eaters++;
+	}
+	return (NULL);
+}
+/*
 static int	philo_check_status(t_philo *ph)
 {
 	if (ph->is_dead)
@@ -52,15 +84,7 @@ static int	philo_check_status(t_philo *ph)
 	}
 	return (-ph->is_dead);
 }
-
-void	philo_sleep_check(t_philo *ph, ssize_t time)
-{
-	t_tv	start;
-
-	gettimeofday(&start, NULL);
-	while (!philo_check_status(ph) && timer_ms(&start) < time)
-		usleep(500);
-}
+*/
 
 void	philo_routine(t_philo *ph)
 {

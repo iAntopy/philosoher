@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_main.c                                       :+:      :+:    :+:   */
+/*   philo_main_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/11/01 22:19:36 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/11 23:31:58 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,12 @@ int	plato_clear(t_plato *pt, int ret_value)
 	
 	sem_unlink(FORK_SEM_PATH);
 	sem_unlink(DEATH_SEM_PATH);
-	sem_unlink(BLOATED_SEM_PATH);
+	sem_unlink(BLOAT_SEM_PATH);
 	sem_unlink(PRINT_SEM_PATH);
 	sem_close(pt->forks);
 	sem_close(pt->death_occured);
 	sem_close(pt->philos_all_full);
 	sem_close(pt->print_lock);
-
-
 	return (ret_value);
 }
 
@@ -61,10 +59,10 @@ int	philo_init(t_plato *pt, t_philo *ph, int i)
 
 int	plato_init_semaphores(t_plato *pt)
 {
-	pt->forks = sem_open("./forks.sem", O_CREAT, 0644, pt->np);
-	pt->death_occured = sem_open("./death.sem", O_CREAT, 0644, 0);
-	pt->philos_all_full = sem_open("./boated_philos.sem", O_CREAT, 0644, 0);
-	pt->print_lock = sem_open("./print.sem", O_CREAT, 0644, 1);
+	pt->forks = sem_open(FORK_SEM_PATH, O_CREAT, 0644, pt->np);
+	pt->death_occured = sem_open(DEATH_SEM_PATH, O_CREAT, 0644, 0);
+	pt->philos_all_full = sem_open(BLOAT_SEM_PATH, O_CREAT, 0644, 1 - pt->np);
+	pt->print_lock = sem_open(PRINT_SEM_PATH, O_CREAT, 0644, 1);
 	return (-(pt->forks == SEM_FAILED || pt->death_occured == SEM_FAILED
 		|| pt->philos_all_full == SEM_FAILED || pt->print_lock == SEM_FAILED));
 }
@@ -121,7 +119,9 @@ int	plato_init(t_plato *pt, int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	static const char	*log_msg[5] = {"has taken a fork\n", "is eating\n", "is sleeping\n", "is thinking\n", "died\n"};
+	static const char	*log_msg[5] = {
+		"has taken a fork\n", "is eating\n",
+		"is sleeping\n", "is thinking\n", "died\n"};
 	t_plato				plato;
 	int					i;
 	
@@ -132,10 +132,7 @@ int	main(int argc, char **argv)
 	while (++i < 5)
 		plato.log_msg_len[i] = (int)ft_strlen(log_msg[i]);
 	if (plato_init(&plato, argc, argv) < 0)
-	{
-		printf("main : plato init is all fucked up\n");
 		return (plato_clear(&plato, 1));
-	}
 	if (plato.death_occured)
 		sem_wait(plato.death_occured);
 	return (plato_clear(&plato, EXIT_SUCCESS));
