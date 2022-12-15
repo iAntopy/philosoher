@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/11 23:38:19 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/14 22:18:27 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,11 @@ typedef struct	s_philo
 	int				nb_id;
 	char			id[32];
 	int				__id_len;
-	ssize_t			*delays;
+//	ssize_t			*delays;
+	ssize_t			t_die;
+	ssize_t			t_eat;
+	ssize_t			t_slp;
+	ssize_t			max_meals;
 	int				is_dead;
 	int				is_full;
 	sem_t			*death_occured;
@@ -56,13 +60,20 @@ typedef struct	s_philo
 	const int		*log_msg_len;
 	t_tv			t0;
 	t_tv			pasta_t;
+	pthread_mutex_t	pasta_lock;
 	ssize_t			nb_meals;
 }	t_philo;
 
 typedef struct	s_plato
 {
+	int				is_child_proc;
+	pid_t			*philo_pids;
 	int				np;				// nb of philosopher
-	ssize_t			delays[4];		// delays[0] : time to die, delay[1] : time to eat, delays[2] : time to sleep.
+//	ssize_t			delays[4];		// delays[0] : time to die, delay[1] : time to eat, delays[2] : time to sleep.
+	ssize_t			t_die;
+	ssize_t			t_eat;
+	ssize_t			t_slp;
+	ssize_t			max_meals;
 	t_philo			ph;
 	pthread_t		bloat_counter_th;
 	int				bloat_counter;
@@ -93,7 +104,7 @@ size_t	ft_strlen(const char *str);
 int		ft_isdigit(int c);
 void	ft_memclear(void *dst, size_t size);
 int		ft_eprintf(const char *fmt, ...);
-ssize_t	timer_ms(t_tv *t0);
+ssize_t	timer_us(t_tv *t0, pthread_mutex_t *lock);
 
 /////////// PHILOSOPHER FUNCS //////////
 int		parse_inputs(t_plato *pt, int argc, char **argv);
@@ -108,6 +119,7 @@ void	philo_routine(t_philo *ph);
 
 ////////// ERROR HANDLING ////////////
 int		repport_parsing_error(void);
+int		repport_malloc_error(void);
 int		repport_thread_init_error(void);
 int		repport_fork_error(void);
 int		repport_thread_init_error(void);

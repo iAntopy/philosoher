@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:50:28 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/11/01 21:52:21 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:13:35 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,14 @@ int	repport_parsing_error(void)
 	ft_eprintf("__________( "WHITE_BC"INVALID INPUTS"RED_BC" )__________");
 	ft_eprintf(WHITE_BC"))\n\n"WHITE_C);
 	print_input_fmt();
+	return (-1);
+}
+
+int	repport_malloc_error(void)
+{
+	ft_eprintf(WHITE_BC"\n\t\t(("RED_BC);
+	ft_eprintf("__________( "WHITE_BC"MALLOC ERROR"RED_BC" )__________");
+	ft_eprintf(WHITE_BC"))\n\n"WHITE_C);
 	return (-1);
 }
 

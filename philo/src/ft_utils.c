@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 20:42:42 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/10 20:38:35 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/14 18:16:41 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ ssize_t	timer_us(t_tv *t0)
 
 	if (!t0)
 	{
-		ft_eprintf("timer_ms : missing input args pt or t0 ptrs.\n");
+		ft_eprintf("timer_us : missing input args t0 ptrs.\n");
 		return (0);
 	}
 	gettimeofday(&curr_t, NULL);
