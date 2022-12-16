@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 21:40:09 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/14 22:11:42 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/15 20:58:19 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ int	philo_log_event(t_philo *ph, int event)
 	const char	*msg;
 	int			msg_len;
 
-	if (!ph || ph->is_dead)
+	if (!ph)// || ph->is_dead)
 		return (-1);
 	ts_len = ft_putnbr_buff(ts_str, timer_us(&ph->t0, &ph->pasta_lock) / 1000);
 	msg = ph->log_msg[event];
 	msg_len = ph->log_msg_len[event];
 	sem_wait(ph->print_lock);
-	if (!ph->is_dead)
+	if (!philo_is_dead(ph))
 	{
 		write(1, ts_str, ts_len);
 		write(1, ph->id, ph->__id_len);

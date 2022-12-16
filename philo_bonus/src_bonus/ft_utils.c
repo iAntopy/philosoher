@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 20:42:42 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/14 22:17:34 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/15 19:41:09 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 ssize_t	timer_us(t_tv *t0, pthread_mutex_t *lock)
 {
+	t_tv	old_t;
 	t_tv	curr_t;
 	ssize_t	delta_t;
 
+//	(void)lock;
 	if (!t0)
 	{
 		ft_eprintf("timer_us : missing input argst0 ptr.\n");
@@ -24,14 +26,15 @@ ssize_t	timer_us(t_tv *t0, pthread_mutex_t *lock)
 	}
 	gettimeofday(&curr_t, NULL);
 
-	ft_eprintf("timer_us : trying to lock\n");
 	pthread_mutex_lock(lock);
-	ft_eprintf("timer_us : lock acquired\n");
-	delta_t = (ssize_t)(curr_t.tv_sec - t0->tv_sec) * 1000000;
-	delta_t += (ssize_t)(curr_t.tv_usec - t0->tv_usec);
-	ft_eprintf("timer_us : trying to unlock\n");
+	old_t = *t0;
 	pthread_mutex_unlock(lock);
-	ft_eprintf("timer_us : unlock SUCCESSFULL\n");
+//	ft_eprintf("timer_us : trying to lock\n");
+//	ft_eprintf("timer_us : lock acquired\n");
+	delta_t = (ssize_t)(curr_t.tv_sec - old_t.tv_sec) * 1000000;
+	delta_t += (ssize_t)(curr_t.tv_usec - old_t.tv_usec);
+//	ft_eprintf("timer_us : trying to unlock\n");
+//	ft_eprintf("timer_us : unlock SUCCESSFULL\n");
 	return (delta_t);
 }
 
