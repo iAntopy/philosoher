@@ -6,7 +6,7 @@
 #    By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/01 20:35:26 by iamongeo          #+#    #+#              #
-#    Updated: 2022/12/15 18:46:19 by iamongeo         ###   ########.fr        #
+#    Updated: 2022/12/16 17:52:27 by iamongeo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ OBJ_B		= $(SRC_B:.c=.o) $(LFT_SRC:.c=.o)
 INCL		= $(INCL_DIR)
 
 CC			= gcc
-CFLAGS		= -pthread -Wall -Wextra -Werror -g
+CFLAGS		= -pthread -Wall -Wextra -Werror -g -fsanitize=thread
 
 NAME_BONUS		= philo_bonus
 

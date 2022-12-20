@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 15:18:14 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/16 00:47:11 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/16 18:08:46 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,9 @@ void	*coach_overlooking_steaming_brain(void *philo_p)
 		usleep(500);
 		if ((timer_us(&ph->pasta_t, &ph->pasta_lock) > ph->t_die) && !philo_log_event(ph, PH_DIE))
 		{
-			sem_wait(ph->print_lock);
-			ft_eprintf("CHILD : Coach sets philo %s as dead \n", ph->id);
-			sem_post(ph->print_lock);
+//			sem_wait(ph->print_lock);
+//			ft_eprintf("CHILD : Coach sets philo %s as dead \n", ph->id);
+//			sem_post(ph->print_lock);
 			pthread_mutex_lock(&ph->is_dead_lock);
 			ph->is_dead = 1;
 			pthread_mutex_unlock(&ph->is_dead_lock);
@@ -119,17 +119,19 @@ void	philo_routine(t_philo *ph)
 {
 	pthread_t	th[2];
 
-	gettimeofday(&ph->t0, NULL);
-	update_pasta_time(ph);
 //	ft_eprintf("CHILD : routine entered\n");
-	if (pthread_create(th, NULL, death_from_above, ph)
-//		|| pthread_create(th + 1, NULL, philos_bloated, ph)
-		|| pthread_create(th + 1, NULL, coach_overlooking_steaming_brain, ph)
-		|| pthread_mutex_init(&ph->pasta_lock, NULL)
+	
+	if (pthread_mutex_init(&ph->pasta_lock, NULL)
 		|| pthread_mutex_init(&ph->nb_meals_lock, NULL)
-		|| pthread_mutex_init(&ph->is_dead_lock, NULL))
+		|| pthread_mutex_init(&ph->is_dead_lock, NULL)
+		|| pthread_create(th, NULL, death_from_above, ph))
+//		|| pthread_create(th + 1, NULL, coach_overlooking_steaming_brain, ph))
 		return ;
 
+	gettimeofday(&ph->t0, NULL);
+	update_pasta_time(ph);
+	if (pthread_create(th + 1, NULL, coach_overlooking_steaming_brain, ph))
+		return ;
 //	ft_eprintf("CHILD : getting timeofday\n");
 //	ph->pasta_t = ph->t0;
 	while (!philo_is_dead(ph))
