@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/11 22:55:13 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/22 16:45:27 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,58 +21,86 @@ int	plato_clear(t_plato *pt, int ret_value)
 	if (pt->coach)
 		pthread_join(pt->coach, NULL);
 	usleep(100000);
-	if (pt->np == 1)
-		pthread_mutex_unlock(pt->forks);
+//	if (pt->np == 1)
+//		pthread_mutex_unlock(&pt->forks[0]);
+	ft_eprintf("clear : while philos (%p) && (i < np (%d))\n", pt->philos, pt->np);
 	i = -1;
 	while (pt->philos && (++i < pt->np))
+	{
+		printf("philos[i] : %p, tid : %d\n", pt->philos + i, (int)pt->philos[i].tid);
 		if (pt->philos[i].tid)
-			pthread_join(pt->philos[i].tid, NULL);
+		{
+			printf("joining philos[i] : %p, tid : %d\n", pt->philos + i, (int)pt->philos[i].tid);
+			if (pthread_join(pt->philos[i].tid, NULL))
+				printf("joining philo FAILED!\n");
+		}
+	}
+	ft_eprintf("clear : all philos supposed to be joined\n");
 	if (pt->philos)
-		ft_free_p((void **)&pt->philos);
+		free(pt->philos);
+//		ft_free_p((void **)&pt->philos);
 	if (pt->forks)
 	{
 		i = -1;
 		while (++i < pt->np)
+		{
 			pthread_mutex_destroy(pt->forks + i);
+			pthread_mutex_destroy(&pt->plocks[i].pasta_t);
+			pthread_mutex_destroy(&pt->plocks[i].meals);
+		}
 		ft_free_p((void **)&pt->forks);
+		ft_free_p((void **)&pt->plocks);
 	}
-	pthread_mutex_destroy(&pt->print_lock);
+	pthread_mutex_destroy(&pt->glocks.print);
+	pthread_mutex_destroy(&pt->glocks.death);
 	return (ret_value);
 }
 
-static int	plato_malloc_init_mutexes(t_plato *pt)
+static int	plato_init_mutexes(t_plato *pt)
 {
-	int				i;
+//	t_philo	*ph;
+//	int	i;
 
-	if (!pt
-		|| !ft_calloc_p(sizeof(pthread_mutex_t) * pt->np, (void **)&pt->forks)
-		|| pthread_mutex_init(&pt->print_lock, NULL) != 0)
-	{
-		ft_free_p((void **)&pt->forks);
+	if (!ft_calloc_p(sizeof(pthread_mutex_t) * pt->total_philos, (void **)&pt->forks)
+		|| !ft_calloc_p(sizeof(t_plocks) * pt->total_philos, (void **)&pt->plocks))
 		return (repport_malloc_error());
-	}
-	i = -1;
-	while (++i < pt->np)
+	if (pthread_mutex_init(&pt->glocks.print, NULL) != 0
+		|| pthread_mutex_init(&pt->glocks.death, NULL) != 0)
+		return (repport_mutex_error());
+//	i = -1;
+//	while (++i < pt->np)
+	pt->np = 0;
+	while (pt->np < pt->total_philos)
 	{
-		if (pthread_mutex_init(pt->forks + i, NULL) != 0)
-		{
-			while (--i >= 0)
-				pthread_mutex_destroy(pt->forks + i);
-			ft_free_p((void **)&pt->forks);
+//		ph = pt->philos + pt->np;
+//		printf("init mutex philo %d ptr : %p\n", pt->np, ph);
+//		printf("init mutex philo %d, plock.pasta_t ptr : %p\n", pt->np, &ph->plocks.pasta_t);
+		if (pthread_mutex_init(pt->forks + pt->np, NULL) != 0
+			|| pthread_mutex_init(&pt->plocks[pt->np].pasta_t, NULL) != 0
+			|| pthread_mutex_init(&pt->plocks[pt->np].meals, NULL) != 0)
+//		{
+//			while (--i >= 0)
+//			{
+//				pthread_mutex_destroy(pt->forks + i);
+//				pthread_mutex_destroy(&ph->philos[i].plocks.pasta_t, NULL);
+//				pthread_mutex_destroy(&ph->philos[i].plocks.meals, NULL);
+//			}
+//			ft_free_p((void **)&pt->forks);
 			return (repport_mutex_error());
-		}
+//		}
+		pt->np++;
 	}
 	return (0);
 }
 
-static int	plato_malloc_init_philos(t_plato *pt)
+static int	plato_init_philos(t_plato *pt)
 {
 	t_philo	*philos;
 	t_philo	*ph;
 	int		i;
 
 	philos = NULL;
-	if (!pt || !ft_calloc_p(sizeof(t_philo) * pt->np, (void **)&philos))
+	if (!ft_calloc_p(sizeof(t_philo) * pt->np, (void **)&philos))
 		return (repport_malloc_error());
 	i = -1;
 	while (++i < pt->np)
@@ -81,13 +109,15 @@ static int	plato_malloc_init_philos(t_plato *pt)
 		ph->death_occured = &pt->death_occured;
 		ph->nb_id = i;
 		ph->__id_len = ft_putnbr_buff(ph->id, i + 1);
-		ph->t_eat = pt->t_eat;
-		ph->t_slp = pt->t_slp;
+		ph->lims = pt->lims;
+//		ph->start_t = &pt->start_t;
 		ph->log_msg = pt->log_msg;
 		ph->log_msg_len = (const int *)pt->log_msg_len;
-		ph->left_fork = pt->forks + ((i + (i % 2)) % pt->np);
-		ph->right_fork = pt->forks + ((i + !(i % 2)) % pt->np);
-		ph->print_lock = &pt->print_lock;
+		ph->forks.left = pt->forks + ((i + (i % 2)) % pt->np);
+		ph->forks.right = pt->forks + ((i + !(i % 2)) % pt->np);
+		ph->glocks = &pt->glocks;
+		ph->plocks = pt->plocks + i;
+//		ph->print_lock = &pt->print_lock;
 	}
 	pt->philos = philos;
 	return (0);
@@ -100,18 +130,23 @@ static int	plato_init(t_plato *pt, int argc, char **argv)
 
 	if (!parse_inputs(pt, argc, argv))
 		return (repport_parsing_error());
-	printf("parsing success\n");
-	if (plato_malloc_init_mutexes(pt) < 0 || plato_malloc_init_philos(pt) < 0)
+//	printf("parsing success\n");
+	if (plato_init_mutexes(pt) < 0 || plato_init_philos(pt) < 0)
 		return (-1);
 	i = 0;
 	while (i < pt->np)
 	{
 		ph = pt->philos + i;
-		if (pthread_create(&(ph->tid), NULL, philo_living, ph))
+		gettimeofday(&ph->start_t, NULL);
+		ph->pasta_t = ph->start_t;
+		if (pt->np > 1 && pthread_create(&ph->tid, NULL, philo_life_cycle, ph))
 			return (repport_thread_init_error());
+		else if (pthread_create(&ph->tid, NULL, philo_single_life_cycle, ph))
+			return (repport_thread_init_error());
+		printf("created thread %d : %d\n", i, (int)ph->tid);
 		i++;
 	}
-	if (pthread_create(&pt->coach, NULL, coach_overlooking_steaming_brains, pt))
+	if (pt->np > 1 && pthread_create(&pt->coach, NULL, coach_start, pt))
 		return (repport_thread_init_error());
 	return (0);
 }
