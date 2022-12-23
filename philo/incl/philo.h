@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/22 21:16:34 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/23 05:04:10 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,34 +33,28 @@
 
 typedef struct timeval	t_tv;
 
-typedef struct	s_limits
+typedef struct s_limits
 {
 	ssize_t		t_die;
 	ssize_t		t_eat;
 	ssize_t		t_slp;
-	int		max_meals;
+	int			max_meals;
 }	t_limits;
 
-typedef struct	s_global_locks
+typedef struct s_global_locks
 {
 	pthread_mutex_t	print;
 	pthread_mutex_t	death;
 	pthread_mutex_t	meals;
 }	t_glocks;
 
-typedef struct	s_philo_locks
-{
-	pthread_mutex_t	pasta_t;
-//	pthread_mutex_t	meals;
-}	t_plocks;
-
-typedef struct	s_forks
+typedef struct s_forks
 {
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
 }	t_forks;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	pthread_t		tid;
 	int				nb_id;
@@ -68,38 +62,32 @@ typedef struct	s_philo
 	int				__id_len;
 	t_limits		lims;
 	ssize_t			nb_meals;
-	char			*death_occured;
-	int				*nb_full;
+	int				*death_occured;
+	int				*nb_hungry;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	t_forks			forks;
 	t_glocks		*glocks;
-	t_plocks		plocks;
 	const char		**log_msg;
 	const int		*log_msg_len;
-//	t_tv			t0;
 	t_tv			pasta_t;
 	t_tv			start_t;
 	int				is_full;
 	int				is_dead;
 }	t_philo;
 
-typedef struct	s_plato
+typedef struct s_plato
 {
 	int				total_philos;
-	int				np;				// nb of philosopher
+	int				np;
 	t_limits		lims;
-	char			death_occured;
-	t_philo			*philos;		// array of philosopher structs. len = np.
-	pthread_t		coach;			// thread checking times 
-	pthread_mutex_t	*forks;			// Array of mutexes. len = np
-//	pthread_mutex_t	print_lock;
+	int				death_occured;
+	t_philo			*philos;
+	pthread_mutex_t	*forks;
 	t_glocks		glocks;
-//	t_plocks		*plocks;	// philo_locks malloced array. init like the forks
-	int				nb_full;
-//	t_tv			start_t;
-	const char		**log_msg;	// const strings array holding log messages.
-	int				log_msg_len[5];	// const int indicating length of log_msg
+	int				nb_hungry;
+	const char		**log_msg;
+	int				log_msg_len[5];
 }	t_plato;
 
 enum	e_philo_events
@@ -116,7 +104,7 @@ int		ft_malloc_p(size_t size, void **ptr);
 int		ft_calloc_p(size_t size, void **ptr);
 int		ft_free_p(void **ptr);
 ssize_t	ft_atol(const char *str);
-int		ft_putnbr_buff(char *buff, ssize_t nbr); // returns len of str in buff
+int		ft_putnbr_buff(char *buff, ssize_t nbr);
 size_t	ft_strlen(const char *str);
 int		ft_isdigit(int c);
 void	ft_memclear(void *dst, size_t size);
@@ -126,14 +114,12 @@ ssize_t	timer_us(t_tv *t0);
 /////////// PHILOSOPHER FUNCS //////////
 int		parse_inputs(t_plato *pt, int argc, char **argv);
 int		philo_log(t_philo *ph, int event);
-void	*coach_start(void *plato_p);
+void	philo_wait_check(t_philo *ph, ssize_t time);
+int		is_someone_dead(t_philo *ph);
+int		is_someone_dead_check(t_philo *ph);
+void	increment_nb_meals(t_philo *ph);
 void	*philo_life_cycle(void *ph);
-void	*philo_single_life_cycle(void *ph);
-//ssize_t	plato_find_min_print_delay(t_plato *pt);
-
-////////// PRINT FUNCS /////////////
-void	philo_print(t_philo *ph);
-void	plato_print(t_plato *pt);
+void	*philo_loner(void *ph);
 
 ////////// ERROR HANDLING ////////////
 int		repport_malloc_error(void);

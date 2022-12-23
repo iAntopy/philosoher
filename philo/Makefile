@@ -10,8 +10,8 @@ _LFT_SRC		= ft_atol.c	\
 _SRC		=	philo_main.c	\
 				parse_inputs.c	\
 				error_handling.c	\
-				philo_life_cycle.c
-#				philo_routine.c		
+				philo_life_cycle.c	\
+				philo_utils.c
 
 SRC_M		= $(addprefix $(SRC_DIR), $(_SRC))
 LFT_SRC		= $(addprefix $(SRC_DIR), $(_LFT_SRC))
@@ -21,7 +21,7 @@ OBJ_M		= $(SRC_M:.c=.o) $(LFT_SRC:.c=.o)
 INCL		= $(INCL_DIR)
 
 CC			= gcc
-CFLAGS		= -pthread -Wall -Wextra -Werror -g #-fsanitize=thread
+CFLAGS		= -pthread -Wall -Wextra -Werror
 
 NAME		= philo
 

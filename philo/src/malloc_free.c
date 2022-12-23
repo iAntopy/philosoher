@@ -6,28 +6,11 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 23:16:35 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/10 20:29:04 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/23 04:03:49 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	malloc_free_p(size_t size, void **ptr)
-{	
-	if (size)
-	{
-		if (!ptr)
-			return (0);
-		*ptr = malloc(size);
-		return (*ptr != NULL);
-	}
-	else if (ptr && *ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
-	return (1);
-}
 
 int	ft_malloc_p(size_t size, void **ptr)
 {
