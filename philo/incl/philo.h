@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/22 04:14:10 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/12/22 21:16:34 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,13 @@ typedef struct	s_global_locks
 {
 	pthread_mutex_t	print;
 	pthread_mutex_t	death;
+	pthread_mutex_t	meals;
 }	t_glocks;
 
 typedef struct	s_philo_locks
 {
 	pthread_mutex_t	pasta_t;
-	pthread_mutex_t	meals;
+//	pthread_mutex_t	meals;
 }	t_plocks;
 
 typedef struct	s_forks
@@ -68,19 +69,19 @@ typedef struct	s_philo
 	t_limits		lims;
 	ssize_t			nb_meals;
 	char			*death_occured;
+	int				*nb_full;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-//	pthread_mutex_t	*print_lock;
-//	pthread_mutex_t	*death_lock;
 	t_forks			forks;
 	t_glocks		*glocks;
-	t_plocks		*plocks;
+	t_plocks		plocks;
 	const char		**log_msg;
 	const int		*log_msg_len;
 //	t_tv			t0;
 	t_tv			pasta_t;
 	t_tv			start_t;
-	ssize_t			t_offset;
+	int				is_full;
+	int				is_dead;
 }	t_philo;
 
 typedef struct	s_plato
@@ -94,7 +95,8 @@ typedef struct	s_plato
 	pthread_mutex_t	*forks;			// Array of mutexes. len = np
 //	pthread_mutex_t	print_lock;
 	t_glocks		glocks;
-	t_plocks		*plocks;	// philo_locks malloced array. init like the forks.
+//	t_plocks		*plocks;	// philo_locks malloced array. init like the forks
+	int				nb_full;
 //	t_tv			start_t;
 	const char		**log_msg;	// const strings array holding log messages.
 	int				log_msg_len[5];	// const int indicating length of log_msg
