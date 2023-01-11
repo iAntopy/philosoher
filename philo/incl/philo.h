@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/22 04:14:10 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/11 05:26:56 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct	s_philo
 //	pthread_mutex_t	*death_lock;
 	t_forks			forks;
 	t_glocks		*glocks;
-	t_plocks		*plocks;
+	t_plocks		plocks;
 	const char		**log_msg;
 	const int		*log_msg_len;
 //	t_tv			t0;
@@ -85,7 +85,7 @@ typedef struct	s_philo
 
 typedef struct	s_plato
 {
-	int				total_philos;
+//	int				total_philos;
 	int				np;				// nb of philosopher
 	t_limits		lims;
 	char			death_occured;
@@ -94,8 +94,8 @@ typedef struct	s_plato
 	pthread_mutex_t	*forks;			// Array of mutexes. len = np
 //	pthread_mutex_t	print_lock;
 	t_glocks		glocks;
-	t_plocks		*plocks;	// philo_locks malloced array. init like the forks.
-//	t_tv			start_t;
+//	t_plocks		*plocks;	// philo_locks malloced array. init like the forks.
+	t_tv			start_t;
 	const char		**log_msg;	// const strings array holding log messages.
 	int				log_msg_len[5];	// const int indicating length of log_msg
 }	t_plato;
@@ -124,7 +124,8 @@ ssize_t	timer_us(t_tv *t0);
 /////////// PHILOSOPHER FUNCS //////////
 int		parse_inputs(t_plato *pt, int argc, char **argv);
 int		philo_log(t_philo *ph, int event);
-void	*coach_start(void *plato_p);
+//void	*coach_start(void *plato_p);
+void	*coaching_philos(t_plato *pt);
 void	*philo_life_cycle(void *ph);
 void	*philo_single_life_cycle(void *ph);
 //ssize_t	plato_find_min_print_delay(t_plato *pt);

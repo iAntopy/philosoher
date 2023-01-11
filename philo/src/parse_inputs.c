@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:48:15 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/12/22 02:16:18 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/11 05:10:39 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	parse_inputs(t_plato *pt, int argc, char **argv)
 		|| !ft_is_only_digits(argv[2]) || !ft_is_only_digits(argv[3])
 		|| !ft_is_only_digits(argv[4]))
 		return (-1);
-	pt->total_philos = ft_atol(argv[1]);
+//	pt->total_philos = ft_atol(argv[1]);
+	pt->np = ft_atol(argv[1]);
 	pt->lims.t_die = ft_atol(argv[2]) * 1000;
 	pt->lims.t_eat = ft_atol(argv[3]) * 1000;
 	pt->lims.t_slp = ft_atol(argv[4]) * 1000;
@@ -41,6 +42,6 @@ int	parse_inputs(t_plato *pt, int argc, char **argv)
 			return (-1);
 		pt->lims.max_meals = ft_atol(argv[5]);
 	}
-	return (pt->total_philos > 0 && pt->lims.t_die >= 0 && pt->lims.t_eat >= 0
-		&& pt->lims.t_slp >= 0 && pt->lims.max_meals > 0);
+	return (pt->np > 0 && pt->lims.t_die >= 0 && pt->lims.t_eat >= 0
+		&& pt->lims.t_slp >= 0 && pt->lims.max_meals >= 0);
 }
