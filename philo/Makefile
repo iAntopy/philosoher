@@ -10,7 +10,9 @@ _LFT_SRC		= ft_atol.c	\
 _SRC		=	philo_main.c	\
 				parse_inputs.c	\
 				error_handling.c	\
-				philo_routine.c		
+				philo_routine.c		\
+				getters_setters.c	\
+				getters_setters_death.c
 
 SRC_M		= $(addprefix $(SRC_DIR), $(_SRC))
 LFT_SRC		= $(addprefix $(SRC_DIR), $(_LFT_SRC))
