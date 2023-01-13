@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/13 00:13:11 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/13 01:07:15 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,10 @@ static int	plato_init_philos(t_plato *pt)
 		ph->death_occured = &pt->death_occured;
 		ph->nb_id = i;
 		ph->__id_len = ft_putnbr_buff(ph->id, i + 1);
-		printf("philo %d id : %s\n", i + 1, ph->id);
 		ph->lims = pt->lims;
 		ph->log_msg = pt->log_msg;
-		ph->forks.left = pt->forks + i + (i % 2);
+		ph->forks.left = pt->forks + ((i + (i % 2)) % pt->np);
 		ph->forks.right = pt->forks + ((i + !(i % 2)) % pt->np);
-//		ph->forks.left = pt->forks + i;
-//		ph->forks.right = pt->forks + ((i + 1) % pt->np);
 		ph->glocks = &pt->glocks;
 		if (pthread_mutex_init(&ph->plocks.pasta_t, NULL) != 0
 			|| pthread_mutex_init(&ph->plocks.meals, NULL) != 0
@@ -73,6 +70,7 @@ static int	plato_init(t_plato *pt, t_phfunc thread_func)
 
 	if (plato_init_philos(pt) < 0)
 		return (-1);
+	printf("philo %d id : %s\n", 1, pt->philos[0].id);
 	if (pthread_mutex_init(&pt->glocks.print, NULL) != 0
 		|| pthread_mutex_init(&pt->glocks.death, NULL) != 0)
 		return (repport_mutex_error());
@@ -85,7 +83,6 @@ static int	plato_init(t_plato *pt, t_phfunc thread_func)
 		ph->pasta_t = pt->start_t;
 		if (pthread_create(&ph->tid, NULL, thread_func, ph) < 0)
 			return (repport_thread_init_error());
-		usleep(100);
 		i++;
 	}
 	return (0);
