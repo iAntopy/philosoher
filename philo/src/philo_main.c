@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:18 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/13 01:07:15 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/15 18:33:51 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,12 @@ static int	plato_init_philos(t_plato *pt)
 		ph->__id_len = ft_putnbr_buff(ph->id, i + 1);
 		ph->lims = pt->lims;
 		ph->log_msg = pt->log_msg;
-		ph->forks.left = pt->forks + ((i + (i % 2)) % pt->np);
-		ph->forks.right = pt->forks + ((i + !(i % 2)) % pt->np);
+		ph->forks.left = pt->forks + (i - (i % 2)) % pt->np;
+		ph->forks.right = pt->forks + (i + !(i % 2)) % pt->np;
 		ph->glocks = &pt->glocks;
 		if (pthread_mutex_init(&ph->plocks.pasta_t, NULL) != 0
 			|| pthread_mutex_init(&ph->plocks.meals, NULL) != 0
+			|| pthread_mutex_init(ph->forks.right, NULL) != 0
 			|| pthread_mutex_init(ph->forks.left, NULL) != 0)
 			return (repport_mutex_error());
 	}
@@ -70,7 +71,6 @@ static int	plato_init(t_plato *pt, t_phfunc thread_func)
 
 	if (plato_init_philos(pt) < 0)
 		return (-1);
-	printf("philo %d id : %s\n", 1, pt->philos[0].id);
 	if (pthread_mutex_init(&pt->glocks.print, NULL) != 0
 		|| pthread_mutex_init(&pt->glocks.death, NULL) != 0)
 		return (repport_mutex_error());
@@ -83,6 +83,7 @@ static int	plato_init(t_plato *pt, t_phfunc thread_func)
 		ph->pasta_t = pt->start_t;
 		if (pthread_create(&ph->tid, NULL, thread_func, ph) < 0)
 			return (repport_thread_init_error());
+		usleep(1);
 		i++;
 	}
 	return (0);
@@ -97,20 +98,19 @@ void	*coaching_philos(t_plato *pt)
 	nb_full = 0;
 	while (!pt->lims.max_meals || nb_full < pt->np)
 	{
-		usleep(200);
+		usleep(500);
 		nb_full = 0;
 		i = -1;
 		while (++i < pt->np)
 		{
 			ph = pt->philos + i;
-			if ((time_since_pasta(ph) > pt->lims.t_die)
-				&& !philo_log(ph, PH_DIE))
-				return (broadcast_death_event(pt));
+			if ((time_since_pasta(ph) > pt->lims.t_die))
+				return (broadcast_death_event(ph, 1));
 			if (check_if_full(ph))
 				nb_full++;
 		}
 	}
-	return (broadcast_death_event(pt));
+	return (broadcast_death_event(pt->philos, 0));
 }
 
 int	main(int argc, char **argv)
@@ -125,7 +125,7 @@ int	main(int argc, char **argv)
 		return (repport_parsing_error());
 	if (!ft_calloc_p(sizeof(pthread_mutex_t) * plato.np, (void **)&plato.forks)
 		|| !ft_calloc_p(sizeof(t_philo) * plato.np, (void **)&plato.philos))
-		return (repport_malloc_error());
+		return (plato_clear(&plato, repport_malloc_error()));
 	if (plato.np == 1 && plato_init(&plato, philo_single_life_cycle) < 0)
 		return (plato_clear(&plato, 1));
 	else if (plato.np > 1 && plato_init(&plato, philo_life_cycle) < 0)

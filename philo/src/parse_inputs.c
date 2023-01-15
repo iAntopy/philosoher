@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:48:15 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/12 22:10:20 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:36:37 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	parse_inputs(t_plato *pt, int argc, char **argv)
 		if (!ft_is_only_digits(argv[5]))
 			return (0);
 		pt->lims.max_meals = ft_atol(argv[5]);
+		if (pt->lims.max_meals == 0)
+			return (0);
 	}
 	return (pt->np > 0 && pt->lims.t_die > 0 && pt->lims.t_eat > 0
 		&& pt->lims.t_slp > 0 && pt->lims.max_meals >= 0);

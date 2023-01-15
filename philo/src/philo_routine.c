@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 18:37:49 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/13 00:48:08 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/15 18:36:24 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	philo_log(t_philo *ph, int event)
 {
 	pthread_mutex_lock(&ph->glocks->print);
-//	printf("id : %s, (%c) (%d)\n", ph->id, ph->id[0], ph->id[0]);
 	if (!is_someone_dead(ph))
 		printf("%zd %s %s", timer_us(&ph->start_t) / 1000,
 			ph->id, ph->log_msg[event]);
@@ -55,7 +54,6 @@ void	*philo_life_cycle(void *philo_p)
 	t_philo	*ph;
 
 	ph = (t_philo *)philo_p;
-//	printf("id : %s, (%c) (%d)\n", ph->id, ph->id[0], ph->id[0]);
 	while (!is_someone_dead(ph))
 	{
 		pthread_mutex_lock(ph->forks.left);

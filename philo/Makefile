@@ -22,7 +22,7 @@ OBJ_M		= $(SRC_M:.c=.o) $(LFT_SRC:.c=.o)
 INCL		= $(INCL_DIR)
 
 CC			= gcc
-CFLAGS		= -pthread -Wall -Wextra -Werror -g #-fsanitize=thread
+CFLAGS		= -pthread -Wall -Wextra -Werror
 
 NAME		= philo
 

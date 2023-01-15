@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 17:13:41 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/12 23:50:59 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:49:09 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int						repport_thread_init_error(void);
 ///////// GETTERS & SETTERS //////////
 int						check_if_full(t_philo *ph);
 int						is_someone_dead(t_philo *ph);
-void					*broadcast_death_event(t_plato *pt);
+void					*broadcast_death_event(t_philo *ph, int do_log);
 ssize_t					time_since_pasta(t_philo *ph);
 void					update_pasta_time(t_philo *ph);
 void					increment_nb_meals(t_philo *ph);
