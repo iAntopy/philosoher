@@ -6,7 +6,7 @@
 /*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 19:48:15 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/01/15 17:36:37 by iamongeo         ###   ########.fr       */
+/*   Updated: 2023/01/15 19:01:38 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ static int	ft_is_only_digits(char *str)
 int	parse_inputs(t_plato *pt, int argc, char **argv)
 {
 	if (!pt || !argc || !argv)
-		return (-1);
+		return (0);
 	if (argc < 5)
-		return (-1);
+		return (0);
 	if ((argc < 5) || (argc > 6) || ft_strlen(argv[1]) > 3
 		|| !ft_is_only_digits(argv[1]) || !ft_is_only_digits(argv[2])
 		|| !ft_is_only_digits(argv[3]) || !ft_is_only_digits(argv[4]))
